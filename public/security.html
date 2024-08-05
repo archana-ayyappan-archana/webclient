@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Testing</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #e0e0e0, #ffffff);
+    }
+    .container {
+      width: 80%;
+      margin: auto;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.7);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      padding: 20px;
+    }
+    header {
+      background: rgba(255, 255, 255, 0.3);
+      color: #343a40;
+      padding: 30px 20px;
+      border-bottom: 3px solid #28a745;
+      border-radius: 10px 10px 0 0;
+    }
+    header a {
+      color: #343a40;
+      text-decoration: none;
+      text-transform: uppercase;
+      font-size: 16px;
+    }
+    header ul {
+      padding: 0;
+      list-style: none;
+    }
+    header li {
+      float: left;
+      display: inline;
+      padding: 0 20px;
+    }
+    header #branding {
+      float: left;
+    }
+    header #branding h1 {
+      margin: 0;
+    }
+    header nav {
+      float: right;
+      margin-top: 10px;
+    }
+    .button_1, button {
+      height: 38px;
+      background: #28a745;
+      border: none;
+      padding: 0 20px;
+      color: #fff;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    #main {
+      padding: 20px;
+      margin-top: 20px;
+    }
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.7);
+    }
+    table, th, td {
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: rgba(40, 167, 69, 0.7);
+      color: white;
+    }
+    .suggestion-container {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      color: #343a40;
+    }
+  </style>
+  <script>
+    function setTestingURL(url) {
+      localStorage.setItem('testingURL', url);
+    }
+  </script>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div id="branding">
+        <h1>Security Testing</h1>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="general.html">General Testing</a></li>
+          <li><a href="gemini.html">Gemini Suggestions</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container">
+    <div id="main">
+      <h2>Submit Security Input</h2>
+      <form id="security-form">
+        <label for="security-input">Security Input:</label>
+        <input type="text" id="security-input" name="securityInput" required>
+        <input type="submit" value="Run ZAP Test" class="button_1">
+      </form>
+      <div id="results"></div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('security-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const securityInput = document.getElementById('security-input').value;
+      fetch('/security', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ securityInput })
+      })
+      .then(response => response.json())
+      .then(data => {
+        const resultsDiv = document.getElementById('results');
+        let zapResults = '<h2>ZAP Test Results</h2>';
+        zapResults += '<table>';
+        zapResults += '<tr><th>ID</th><th>Name</th><th>Risk</th><th>Description</th><th>Solution</th></tr>';
+        data.vulnerabilities.forEach(vuln => {
+          zapResults += `<tr>
+                          <td>${vuln.id}</td>
+                          <td>${vuln.name}</td>
+                          <td>${vuln.risk}</td>
+                          <td>${vuln.description}</td>
+                          <td>${vuln.solution}</td>
+                        </tr>`;
+        });
+        zapResults += '</table>';
+        resultsDiv.innerHTML = zapResults;
+
+        if (data.resultFilePath) {
+          setTestingURL(securityInput);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    });
+  </script>
+</body>
+</html>

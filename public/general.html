@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>General Testing</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #e0e0e0, #ffffff);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container {
+      width: 80%;
+      margin: 20px auto;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.7);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      padding: 20px;
+    }
+    header {
+      background: #343a40;
+      color: #fff;
+      padding: 15px 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    header a {
+      color: #fff;
+      text-decoration: none;
+      text-transform: uppercase;
+      font-size: 14px;
+      padding: 0 10px;
+    }
+    header ul {
+      padding: 0;
+      list-style: none;
+      display: flex;
+      margin: 0;
+    }
+    header li {
+      padding: 0 10px;
+    }
+    header #branding h1 {
+      margin: 0;
+      font-size: 24px;
+      padding-left: 20px;
+    }
+    .form-container {
+      margin-top: 20px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    input[type="file"] {
+      display: block;
+      padding: 5px;
+    }
+    button {
+      height: 48px;
+      background: #28a745;
+      border: none;
+      padding: 0 30px;
+      color: #fff;
+      cursor: pointer;
+      border-radius: 25px;
+      text-transform: uppercase;
+      font-size: 16px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: background 0.3s, transform 0.3s;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    button:hover {
+      background: #218838;
+      transform: translateY(-2px);
+    }
+    button:active {
+      background: #1e7e34;
+      transform: translateY(1px);
+    }
+    .results-container {
+      margin-top: 20px;
+    }
+    .results-container pre {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    .result-item {
+      margin-bottom: 20px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background: #f9f9f9;
+    }
+    .result-item h3 {
+      margin-top: 0;
+    }
+    .result-item .key {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div id="branding">
+      <h1>General Testing</h1>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/general.html">General Testing</a></li>
+        <li><a href="/security.html">Security Testing</a></li>
+        <li><a href="/gemini.html">Gemini Suggestions</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="form-container">
+      <form id="general-testing-form" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="codeUpload">Upload Code</label>
+          <input type="file" id="codeUpload" name="codeUpload" required>
+        </div>
+        <div class="form-group">
+          <label for="collectionUpload">Upload Collection</label>
+          <input type="file" id="collectionUpload" name="collectionUpload" required>
+        </div>
+        <button type="submit">Analyze Code</button>
+      </form>
+    </div>
+    <div class="results-container" id="results-container"></div>
+  </div>
+
+  <script>
+    document.getElementById('general-testing-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+      const resultsContainer = document.getElementById('results-container');
+      
+      fetch('/general-testing?step=analyze', {
+        method: 'POST',
+        body: formData,
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Security Analysis Data:', data);
+        resultsContainer.innerHTML = '<h2>Security Analysis</h2><pre>' + data.security_analysis + '</pre>';
+        const nextButton = document.createElement('button');
+        nextButton.innerText = 'Generate Test Cases';
+        nextButton.addEventListener('click', () => {
+          fetch('/general-testing?step=generate_tests', {
+            method: 'POST',
+            body: formData,
+          })
+          .then(response => {
+            console.log('Raw Response:', response);
+            return response.json();
+          })
+          .then(data => {
+            console.log('Generated Test Cases Data:', data);
+            resultsContainer.innerHTML += '<h2>Generated Test Cases</h2>';
+            
+            function displayData(data, container) {
+              if (Array.isArray(data)) {
+                data[0].forEach((item, index) => {
+                  const itemContainer = document.createElement('div');
+                  itemContainer.className = 'result-item';
+                  itemContainer.innerHTML = `<h3>Test Case ${index + 1}</h3>`;
+                  displayData(item, itemContainer);
+                  container.appendChild(itemContainer);
+                });
+              } else if (typeof data === 'object' && data !== null) {
+                Object.keys(data).forEach(key => {
+                  const keyContainer = document.createElement('div');
+                  keyContainer.innerHTML = `<span class="key">${key}:</span> `;
+                  displayData(data[key], keyContainer);
+                  container.appendChild(keyContainer);
+                });
+              } else {
+                container.innerHTML += `<pre>${data}</pre>`;
+              }
+            }
+
+            const testCaseContainer = document.createElement('div');
+            displayData(data, testCaseContainer);
+            resultsContainer.appendChild(testCaseContainer);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            resultsContainer.innerHTML += '<h2>Error Generating Test Cases</h2><pre>' + error + '</pre>';
+          });
+        });
+        resultsContainer.appendChild(nextButton);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        resultsContainer.innerHTML = '<h2>Error</h2><pre>' + error + '</pre>';
+      });
+    });
+  </script>
+</body>
+</html>

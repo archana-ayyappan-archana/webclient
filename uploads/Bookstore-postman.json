@@ -1,0 +1,281 @@
+{
+	"info": {
+		"_postman_id": "d8e7f17b-8ae3-4de1-a49e-d39c8f942d9c",
+		"name": "Bookstore API",
+		"description": "Collection for testing the Bookstore API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"testpassword\",\n    \"role\": \"customer\"\n}"
+						},
+						"url": {
+							"raw": "https://app-2ehlb6zp2q-uc.a.run.app/api/auth/register",
+							"protocol": "https",
+							"host": [
+								"app-2ehlb6zp2q-uc.a.run.app"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"testpassword\"\n}"
+						},
+						"url": {
+							"raw": "https://app-2ehlb6zp2q-uc.a.run.app/api/auth/login",
+							"protocol": "https",
+							"host": [
+								"app-2ehlb6zp2q-uc.a.run.app"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Books",
+			"item": [
+				{
+					"name": "Get All Books",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://app-2ehlb6zp2q-uc.a.run.app/api/v1/books",
+							"protocol": "https",
+							"host": [
+								"app-2ehlb6zp2q-uc.a.run.app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"books"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Book by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://app-2ehlb6zp2q-uc.a.run.app/api/v1/books/:id",
+							"protocol": "https",
+							"host": [
+								"app-2ehlb6zp2q-uc.a.run.app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"books",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Purchase Book",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://app-2ehlb6zp2q-uc.a.run.app/api/v1/books/purchase/:id",
+							"protocol": "https",
+							"host": [
+								"app-2ehlb6zp2q-uc.a.run.app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"books",
+								"purchase",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Add Book",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"New Book\",\n    \"author\": \"Author Name\",\n    \"genre\": \"Genre\",\n    \"publicationYear\": 2021,\n    \"aisle\": \"A4\",\n    \"section\": \"F3\",\n    \"quantity\": 10\n}"
+						},
+						"url": {
+							"raw": "https://app-2ehlb6zp2q-uc.a.run.app/api/v1/admin/books",
+							"protocol": "https",
+							"host": [
+								"app-2ehlb6zp2q-uc.a.run.app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"books"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Book",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Updated Book Title\"\n}"
+						},
+						"url": {
+							"raw": "https://app-2ehlb6zp2q-uc.a.run.app/api/v1/admin/books/:id",
+							"protocol": "https",
+							"host": [
+								"app-2ehlb6zp2q-uc.a.run.app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"books",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Book",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://app-2ehlb6zp2q-uc.a.run.app/api/v1/admin/books/:id",
+							"protocol": "https",
+							"host": [
+								"app-2ehlb6zp2q-uc.a.run.app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"books",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

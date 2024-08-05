@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Testing Platform</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #e0e0e0, #ffffff);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container {
+      width: 80%;
+      margin: 20px auto;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.7);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      padding: 20px;
+    }
+    header {
+      background: #343a40;
+      color: #fff;
+      padding: 15px 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    header a {
+      color: #fff;
+      text-decoration: none;
+      text-transform: uppercase;
+      font-size: 14px;
+      padding: 0 10px;
+    }
+    header ul {
+      padding: 0;
+      list-style: none;
+      display: flex;
+      margin: 0;
+    }
+    header li {
+      padding: 0 10px;
+    }
+    header #branding h1 {
+      margin: 0;
+      font-size: 24px;
+      padding-left: 20px;
+    }
+    .banner {
+      text-align: center;
+      padding: 50px 20px;
+      background: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(10px);
+      border-radius: 10px;
+      margin-top: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .banner h2 {
+      color: #343a40;
+      margin-bottom: 30px;
+      font-size: 24px;
+    }
+    .banner .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+    .button {
+      height: 48px;
+      background: #28a745;
+      border: none;
+      padding: 0 30px;
+      color: #fff;
+      cursor: pointer;
+      border-radius: 25px;
+      text-transform: uppercase;
+      font-size: 16px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: background 0.3s, transform 0.3s;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .button:hover {
+      background: #218838;
+      transform: translateY(-2px);
+    }
+    .button:active {
+      background: #1e7e34;
+      transform: translateY(1px);
+    }
+  </style>
+  <script>
+    function setTestingURL(url) {
+      localStorage.setItem('testingURL', url);
+    }
+  </script>
+</head>
+<body>
+  <header>
+    <div id="branding">
+      <h1>Security Testing Platform</h1>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/general.html">General Testing</a></li>
+        <li><a href="/security.html" onclick="setTestingURL('/security.html')">Security Testing</a></li>
+        <li><a href="/gemini.html">Gemini Suggestions</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="banner">
+      <h2>An AI-based platform for comprehensive testing</h2>
+      <div class="buttons">
+        <a href="/general.html" class="button">General Testing</a>
+        <a href="/security.html" class="button" onclick="setTestingURL('/security.html')">Security Testing</a>
+        <a href="/gemini.html" class="button">Gemini Suggestions</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

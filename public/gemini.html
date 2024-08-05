@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gemini Suggestions</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #e0e0e0, #ffffff);
+    }
+    .container {
+      width: 80%;
+      margin: auto;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.7);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      padding: 20px;
+    }
+    header {
+      background: rgba(255, 255, 255, 0.3);
+      color: #343a40;
+      padding: 30px 20px;
+      border-bottom: 3px solid #28a745;
+      border-radius: 10px 10px 0 0;
+    }
+    header a {
+      color: #343a40;
+      text-decoration: none;
+      text-transform: uppercase;
+      font-size: 16px;
+    }
+    header ul {
+      padding: 0;
+      list-style: none;
+    }
+    header li {
+      float: left;
+      display: inline;
+      padding: 0 20px;
+    }
+    header #branding {
+      float: left;
+    }
+    header #branding h1 {
+      margin: 0;
+    }
+    header nav {
+      float: right;
+      margin-top: 10px;
+    }
+    .button_1, button {
+      height: 38px;
+      background: #28a745;
+      border: none;
+      padding: 0 20px;
+      color: #fff;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    #main {
+      padding: 20px;
+      margin-top: 20px;
+    }
+    .suggestion-container {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      color: #343a40;
+    }
+    pre {
+      background: #f8f8f8;
+      padding: 10px;
+      border-radius: 5px;
+      overflow: auto;
+    }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .pagination button {
+      background: #28a745;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin: 0 5px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .pagination button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const endpointLabel = document.getElementById('endpoint-label');
+      endpointLabel.innerHTML = 'Click "Get Suggestions" to fetch Gemini suggestions';
+    });
+
+    let currentPage = 1;
+    const pageSize = 5;
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const geminiForm = document.getElementById('gemini-form');
+      geminiForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        fetchSuggestions(currentPage, pageSize);
+      });
+
+      document.getElementById('prev-page').addEventListener('click', function() {
+        if (currentPage > 1) {
+          currentPage--;
+          fetchSuggestions(currentPage, pageSize);
+        }
+      });
+
+      document.getElementById('next-page').addEventListener('click', function() {
+        currentPage++;
+        fetchSuggestions(currentPage, pageSize);
+      });
+    });
+
+    function fetchSuggestions(page, pageSize) {
+      console.log("Fetching suggestions for page:", page);
+      fetch(`/gemini?page=${page}&pageSize=${pageSize}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.json();
+      })
+      .then(geminiData => {
+        console.log("Received Gemini suggestions data:", geminiData);
+        const geminiDiv = document.getElementById('gemini-suggestions');
+        let geminiResults = '<h2>Gemini Suggestions</h2>';
+        geminiData.forEach(suggestion => {
+          geminiResults += `<div class="suggestion-container">
+                              <h3>${suggestion.name}</h3>
+                              <p><strong>Suggestions:</strong></p>
+                              <pre>${suggestion.suggestions}</pre>
+                              <p><strong>Code Samples:</strong></p>
+                              <pre>${suggestion.codeSamples}</pre>
+                            </div>`;
+        });
+        geminiDiv.innerHTML = geminiResults;
+        updatePaginationButtons(geminiData.length < pageSize);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }
+
+    function updatePaginationButtons(isLastPage) {
+      document.getElementById('prev-page').disabled = currentPage === 1;
+      document.getElementById('next-page').disabled = isLastPage;
+    }
+  </script>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div id="branding">
+        <h1>Gemini Suggestions</h1>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="general.html">General Testing</a></li>
+          <li><a href="security.html">Security Testing</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container">
+    <div id="main">
+      <h2>Get Gemini Suggestions</h2>
+      <div id="endpoint-label"></div>
+      <form id="gemini-form">
+        <input type="submit" value="Get Suggestions" class="button_1" id="get-suggestions">
+      </form>
+      <div id="gemini-suggestions"></div>
+      <div class="pagination">
+        <button id="prev-page" disabled>Previous</button>
+        <button id="next-page" disabled>Next</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
